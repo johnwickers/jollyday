@@ -109,7 +109,7 @@ public class DefaultHolidayManager extends HolidayManager {
 		parseHolidays(year, holidaySet, c.getHolidays());
 		if (args != null && args.length > 0) {
 			String hierarchy = args[0];
-			for (Configuration config : c.getSubConfigurations()) {
+			for (Configuration config : c.getSubConfigurationList()) {
 				if (hierarchy.equalsIgnoreCase(config.getHierarchy())) {
 					getHolidays(year, config, holidaySet, copyOfRange(args, 1, args.length));
 					break;
@@ -168,7 +168,7 @@ public class DefaultHolidayManager extends HolidayManager {
 			for (PropertyDescriptor propertyDescriptor : propertiesDescs) {
 				if (List.class.isAssignableFrom(propertyDescriptor.getPropertyType())) {
 					List<?> l = (List<?>) propertyDescriptor.getReadMethod().invoke(config);
-					if (!l.isEmpty()) {
+					if (l != null && !l.isEmpty()) {
 						String className = l.get(0).getClass().getName();
 						if (!parserCache.containsKey(className)) {
 							String propName = PARSER_IMPL_PREFIX + className;
@@ -221,7 +221,7 @@ public class DefaultHolidayManager extends HolidayManager {
 				space.append("-");
 			}
 			LOG.finer(space + " " + c.getDescription() + "(" + c.getHierarchy() + ").");
-			for (Configuration sub : c.getSubConfigurations()) {
+			for (Configuration sub : c.getSubConfigurationList()) {
 				logHierarchy(sub, level + 1);
 			}
 		}
@@ -237,14 +237,16 @@ public class DefaultHolidayManager extends HolidayManager {
 	protected static void validateConfigurationHierarchy(final Configuration c) {
 		Map<String, Integer> hierarchyMap = new HashMap<>();
 		Set<String> multipleHierarchies = new HashSet<>();
-		for (Configuration subConfig : c.getSubConfigurations()) {
-			String hierarchy = subConfig.getHierarchy();
-			if (!hierarchyMap.containsKey(hierarchy)) {
-				hierarchyMap.put(hierarchy, 1);
-			} else {
-				int count = hierarchyMap.get(hierarchy);
-				hierarchyMap.put(hierarchy, ++count);
-				multipleHierarchies.add(hierarchy);
+		if (c.getSubConfigurationList() != null) {
+			for (Configuration subConfig : c.getSubConfigurationList()) {
+				String hierarchy = subConfig.getHierarchy();
+				if (!hierarchyMap.containsKey(hierarchy)) {
+					hierarchyMap.put(hierarchy, 1);
+				} else {
+					int count = hierarchyMap.get(hierarchy);
+					hierarchyMap.put(hierarchy, ++count);
+					multipleHierarchies.add(hierarchy);
+				}
 			}
 		}
 		if (multipleHierarchies.size() > 0) {
@@ -257,8 +259,10 @@ public class DefaultHolidayManager extends HolidayManager {
 			}
 			throw new IllegalArgumentException(msg.toString().trim());
 		}
-		for (Configuration subConfig : c.getSubConfigurations()) {
-			validateConfigurationHierarchy(subConfig);
+		if (c.getSubConfigurationList() != null) {
+			for (Configuration subConfig : c.getSubConfigurationList()) {
+				validateConfigurationHierarchy(subConfig);
+			}
 		}
 	}
 
@@ -285,9 +289,11 @@ public class DefaultHolidayManager extends HolidayManager {
 	private static CalendarHierarchy createConfigurationHierarchy(final Configuration c, CalendarHierarchy h) {
 		h = new CalendarHierarchy(h, c.getHierarchy());
 		h.setFallbackDescription(c.getDescription());
-		for (Configuration sub : c.getSubConfigurations()) {
-			CalendarHierarchy subHierarchy = createConfigurationHierarchy(sub, h);
-			h.getChildren().put(subHierarchy.getId(), subHierarchy);
+		if (c.getSubConfigurationList() != null) {
+			for (Configuration sub : c.getSubConfigurationList()) {
+				CalendarHierarchy subHierarchy = createConfigurationHierarchy(sub, h);
+				h.getChildren().put(subHierarchy.getId(), subHierarchy);
+			}
 		}
 		return h;
 	}

@@ -50,9 +50,9 @@ public class EthiopianOrthodoxHolidayParserTest {
 	public void testAllHolidays() {
 		Set<Holiday> holidays = new HashSet<>();
 		Holidays config = new Holidays();
-		config.getEthiopianOrthodoxHoliday().add(createHoliday(EthiopianOrthodoxHolidayType.ENKUTATASH));
-		config.getEthiopianOrthodoxHoliday().add(createHoliday(EthiopianOrthodoxHolidayType.MESKEL));
-		config.getEthiopianOrthodoxHoliday().add(createHoliday(EthiopianOrthodoxHolidayType.TIMKAT));
+		config.getEthiopianOrthodoxHolidayList().add(createHoliday(EthiopianOrthodoxHolidayType.ENKUTATASH));
+		config.getEthiopianOrthodoxHolidayList().add(createHoliday(EthiopianOrthodoxHolidayType.MESKEL));
+		config.getEthiopianOrthodoxHolidayList().add(createHoliday(EthiopianOrthodoxHolidayType.TIMKAT));
 		parser.parse(2010, holidays, config);
 		Assert.assertEquals("Wrong number of holidays.", 3, holidays.size());
 		assertContains(calendarUtil.create(2010, 1, 18), holidays);

@@ -1,17 +1,17 @@
 /**
- * Copyright 2011 Sven Diedrichsen 
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
- * 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
- * express or implied. See the License for the specific language 
- * governing permissions and limitations under the License. 
+ * Copyright 2011 Sven Diedrichsen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 package de.jollyday.tests.parsers;
 
@@ -33,7 +33,7 @@ import de.jollyday.util.CalendarUtil;
 
 /**
  * @author Sven
- * 
+ *
  */
 public class RelativeToFixedParserTest {
 
@@ -54,7 +54,7 @@ public class RelativeToFixedParserTest {
 		Holidays config = new Holidays();
 		RelativeToFixed rule = new RelativeToFixed();
 		rule.setValidFrom(2011);
-		config.getRelativeToFixed().add(rule);
+		config.getRelativeToFixedList().add(rule);
 		rtfp.parse(2010, holidays, config);
 		Assert.assertTrue("Expected to be empty.", holidays.isEmpty());
 	}
@@ -70,7 +70,7 @@ public class RelativeToFixedParserTest {
 		date.setDay(5);
 		date.setMonth(Month.AUGUST);
 		rule.setDate(date);
-		config.getRelativeToFixed().add(rule);
+		config.getRelativeToFixedList().add(rule);
 		rtfp.parse(2011, holidays, config);
 		Assert.assertEquals("Number of holidays wrong.", 1, holidays.size());
 		Assert.assertEquals("Wrong date.", calendarUtil.create(2011, 8, 11), holidays.iterator().next().getDate());
@@ -87,12 +87,12 @@ public class RelativeToFixedParserTest {
 		date.setDay(23);
 		date.setMonth(Month.NOVEMBER);
 		rule.setDate(date);
-		config.getRelativeToFixed().add(rule);
+		config.getRelativeToFixedList().add(rule);
 		rtfp.parse(2016, holidays, config);
 		Assert.assertEquals("Number of holidays wrong.", 1, holidays.size());
 		Assert.assertEquals("Wrong date.", calendarUtil.create(2016, 11, 16), holidays.iterator().next().getDate());
 	}
-	
+
 	@Test
 	public void testNumberOfDays() {
 		Set<Holiday> holidays = new HashSet<>();
@@ -104,7 +104,7 @@ public class RelativeToFixedParserTest {
 		date.setDay(5);
 		date.setMonth(Month.AUGUST);
 		rule.setDate(date);
-		config.getRelativeToFixed().add(rule);
+		config.getRelativeToFixedList().add(rule);
 		rtfp.parse(2011, holidays, config);
 		Assert.assertEquals("Number of holidays wrong.", 1, holidays.size());
 		Assert.assertEquals("Wrong date.", calendarUtil.create(2011, 8, 2), holidays.iterator().next().getDate());

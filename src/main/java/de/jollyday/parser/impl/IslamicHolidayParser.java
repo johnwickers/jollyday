@@ -46,7 +46,7 @@ public class IslamicHolidayParser extends AbstractHolidayParser {
 	/** {@inheritDoc} */
 	@Override
 	public void parse(int year, Set<Holiday> holidays, final Holidays config) {
-		for (IslamicHoliday i : config.getIslamicHoliday()) {
+		for (IslamicHoliday i : config.getIslamicHolidayList()) {
 			if (!isValid(i, year)) {
 				continue;
 			}

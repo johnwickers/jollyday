@@ -1,17 +1,17 @@
 /**
- * Copyright 2011 Sven Diedrichsen 
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
- * 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
- * express or implied. See the License for the specific language 
- * governing permissions and limitations under the License. 
+ * Copyright 2011 Sven Diedrichsen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 package de.jollyday.tests.parsers;
 
@@ -23,22 +23,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.jollyday.config.*;
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.jollyday.Holiday;
-import de.jollyday.config.Fixed;
-import de.jollyday.config.Holidays;
-import de.jollyday.config.Month;
-import de.jollyday.config.MovingCondition;
-import de.jollyday.config.Weekday;
-import de.jollyday.config.With;
 import de.jollyday.parser.impl.FixedParser;
 import de.jollyday.util.CalendarUtil;
 
 /**
  * @author Sven
- * 
+ *
  */
 public class FixedParserTest {
 
@@ -68,7 +63,7 @@ public class FixedParserTest {
 	public void testCyle2YearsInvalid() {
 		Fixed fixed = createFixed(4, Month.JANUARY);
 		fixed.setValidFrom(2010);
-		fixed.setEvery("2_YEARS");
+		fixed.setEvery(HolidayCycleType._2_YEARS);
 		Holidays holidays = createHolidays(fixed);
 		Set<Holiday> set = new HashSet<>();
 		fixedParser.parse(2011, set, holidays);
@@ -79,7 +74,7 @@ public class FixedParserTest {
 	public void testCyle3Years() {
 		Fixed fixed = createFixed(4, Month.JANUARY);
 		fixed.setValidFrom(2010);
-		fixed.setEvery("3_YEARS");
+		fixed.setEvery(HolidayCycleType._3_YEARS);
 		Holidays holidays = createHolidays(fixed);
 		Set<Holiday> set = new HashSet<>();
 		fixedParser.parse(2013, set, holidays);
@@ -98,7 +93,7 @@ public class FixedParserTest {
 
 	public Holidays createHolidays(Fixed... fs) {
 		Holidays h = new Holidays();
-		h.getFixed().addAll(Arrays.asList(fs));
+		h.getFixedList().addAll(Arrays.asList(fs));
 		return h;
 	}
 
@@ -109,7 +104,7 @@ public class FixedParserTest {
 		Fixed f = new Fixed();
 		f.setDay(day);
 		f.setMonth(m);
-		f.getMovingCondition().addAll(Arrays.asList(mc));
+		f.getMovingConditionList().addAll(Arrays.asList(mc));
 		return f;
 	}
 

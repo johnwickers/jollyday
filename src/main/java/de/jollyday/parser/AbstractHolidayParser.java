@@ -15,15 +15,15 @@
  */
 package de.jollyday.parser;
 
-import static java.time.temporal.TemporalAdjusters.nextOrSame;
-import static java.time.temporal.TemporalAdjusters.previousOrSame;
-
 import de.jollyday.config.*;
 import de.jollyday.util.CalendarUtil;
 import de.jollyday.util.XMLUtil;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+
+import static java.time.temporal.TemporalAdjusters.nextOrSame;
+import static java.time.temporal.TemporalAdjusters.previousOrSame;
 
 /**
  * The abstract base class for all HolidayParser implementations.
@@ -83,18 +83,24 @@ public abstract class AbstractHolidayParser implements HolidayParser {
 				} else {
 					if (h.getValidFrom() != null) {
 						int cycleYears;
-						if (TWO_YEARS.equalsIgnoreCase(h.getEvery())) {
-							cycleYears = 2;
-						} else if (THREE_YEARS.equalsIgnoreCase(h.getEvery())) {
-							cycleYears = 3;
-						} else if (FOUR_YEARS.equalsIgnoreCase(h.getEvery())) {
-							cycleYears = 4;
-						} else if (FIVE_YEARS.equalsIgnoreCase(h.getEvery())) {
-							cycleYears = 5;
-						} else if (SIX_YEARS.equalsIgnoreCase(h.getEvery())) {
-							cycleYears = 6;
-						} else {
-							throw new IllegalArgumentException("Cannot handle unknown cycle type '" + h.getEvery()
+						switch(h.getEvery()) {
+							case _2_YEARS:
+								cycleYears = 2;
+								break;
+							case _3_YEARS:
+								cycleYears = 3;
+								break;
+							case _4_YEARS:
+								cycleYears = 4;
+								break;
+							case _5_YEARS:
+								cycleYears = 5;
+								break;
+							case _6_YEARS:
+								cycleYears = 6;
+								break;
+							default:
+								throw new IllegalArgumentException("Cannot handle unknown cycle type '" + h.getEvery()
 									+ "'.");
 						}
 						return (year - h.getValidFrom()) % cycleYears == 0;
@@ -128,10 +134,12 @@ public abstract class AbstractHolidayParser implements HolidayParser {
 	 * @return the moved date
 	 */
 	protected LocalDate moveDate(MoveableHoliday fm, LocalDate fixed) {
-		for (MovingCondition mc : fm.getMovingCondition()) {
-			if (shallBeMoved(fixed, mc)) {
-				fixed = moveDate(mc, fixed);
-				break;
+		if (fm.getMovingConditionList() != null) {
+			for (MovingCondition mc : fm.getMovingConditionList()) {
+				if (shallBeMoved(fixed, mc)) {
+					fixed = moveDate(mc, fixed);
+					break;
+				}
 			}
 		}
 		return fixed;
@@ -159,8 +167,8 @@ public abstract class AbstractHolidayParser implements HolidayParser {
 	 */
 	private LocalDate moveDate(MovingCondition mc, LocalDate fixed) {
 		DayOfWeek weekday = xmlUtil.getWeekday(mc.getWeekday());
-		
-		return fixed.with(mc.getWith() == With.NEXT ? nextOrSame(weekday) : 
+
+		return fixed.with(mc.getWith() == With.NEXT ? nextOrSame(weekday) :
 				previousOrSame(weekday));
 	}
 

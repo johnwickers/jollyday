@@ -38,7 +38,7 @@ public class ChristianHolidayParser extends RelativeToEasterSundayParser {
 	 */
 	@Override
 	public void parse(int year, Set<Holiday> holidays, final Holidays config) {
-		for (ChristianHoliday ch : config.getChristianHoliday()) {
+		for (ChristianHoliday ch : config.getChristianHolidayList()) {
 			if (!isValid(ch, year)) {
 				continue;
 			}

@@ -38,7 +38,7 @@ public class XmlFileDataSource implements ConfigurationDataSource {
     public Configuration getConfiguration(ManagerParameter parameter) {
         URL resourceUrl = parameter.createResourceUrl();
         try(InputStream inputStream = resourceUrl.openStream()) {
-            return xmlUtil.unmarshallConfiguration(inputStream);
+            return xmlUtil.loadUnmarshaller().unmarshallConfiguration(inputStream);
         } catch (Exception e) {
             throw new IllegalStateException("Cannot instantiate configuration from URL '"+resourceUrl+"'.", e);
         }

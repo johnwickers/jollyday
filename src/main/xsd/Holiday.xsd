@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/Holiday"
-	xmlns:tns="http://www.example.org/Holiday" elementFormDefault="qualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://jollyday.de/config"
+	xmlns:tns="http://jollyday.de/config" elementFormDefault="qualified">
 
 	<simpleType name="Weekday">
 		<restriction base="string">
@@ -401,6 +401,7 @@
 		<restriction base="string">
 			<enumeration value="EVERY_YEAR"></enumeration>
 			<enumeration value="2_YEARS"></enumeration>
+			<enumeration value="3_YEARS"></enumeration>
 			<enumeration value="4_YEARS"></enumeration>
 			<enumeration value="5_YEARS"></enumeration>
 			<enumeration value="6_YEARS"></enumeration>

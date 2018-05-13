@@ -1,17 +1,17 @@
 /**
- * Copyright 2011 Sven Diedrichsen 
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
- * 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
- * express or implied. See the License for the specific language 
- * governing permissions and limitations under the License. 
+ * Copyright 2011 Sven Diedrichsen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 package de.jollyday.tests.parsers;
 
@@ -64,7 +64,7 @@ public class ChristianHolidayParserTest {
 	public void testChristianInvalidDate() {
 		Set<Holiday> holidays = new HashSet<>();
 		Holidays config = createConfig(ChristianHolidayType.EASTER);
-		config.getChristianHoliday().get(0).setValidTo(2010);
+		config.getChristianHolidayList().get(0).setValidTo(2010);
 		hp.parse(2011, holidays, config);
 		Assert.assertEquals("Wrong number of holidays.", 0, holidays.size());
 	}
@@ -116,7 +116,7 @@ public class ChristianHolidayParserTest {
 			RelativeToEasterSunday d = new RelativeToEasterSunday();
 			d.setDays(day);
 			d.setChronology(ChronologyType.GREGORIAN);
-			config.getRelativeToEasterSunday().add(d);
+			config.getRelativeToEasterSundayList().add(d);
 		}
 		return config;
 	}
@@ -126,7 +126,7 @@ public class ChristianHolidayParserTest {
 		for (ChristianHolidayType type : types) {
 			ChristianHoliday h = new ChristianHoliday();
 			h.setType(type);
-			config.getChristianHoliday().add(h);
+			config.getChristianHolidayList().add(h);
 		}
 		return config;
 	}

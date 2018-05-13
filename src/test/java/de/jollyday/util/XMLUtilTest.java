@@ -15,29 +15,19 @@
  */
 package de.jollyday.util;
 
-import de.jollyday.config.Configuration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.IOException;
 import java.io.InputStream;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class XMLUtilTest {
 
-	@Mock
-	XMLUtil.JAXBContextCreator contextCreator;
 	@Mock
 	InputStream inputStream;
 
@@ -45,28 +35,14 @@ public class XMLUtilTest {
 	XMLUtil xmlUtil = new XMLUtil();
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testUnmarshallConfigurationNullCheck() throws IOException {
-		xmlUtil.unmarshallConfiguration(null);
+	public void testUnmarshallConfigurationNullCheck() throws Exception {
+		xmlUtil.loadUnmarshaller().unmarshallConfiguration(null);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testUnmarshallConfigurationException() throws IOException, JAXBException {
-		when(contextCreator.create(eq(XMLUtil.PACKAGE), any(ClassLoader.class))).thenThrow(new JAXBException(""))
-				.thenThrow(new JAXBException(""));
-		xmlUtil.unmarshallConfiguration(inputStream);
+	public void testUnmarshallConfigurationException() throws Exception {
+		xmlUtil.loadUnmarshaller().unmarshallConfiguration(inputStream);
 		verify(inputStream).close();
 	}
 
-	@Test
-	public void testUnmarshallConfiguration() throws IOException, JAXBException {
-		JAXBContext ctx = mock(JAXBContext.class);
-		Unmarshaller unmarshaller = mock(Unmarshaller.class);
-		@SuppressWarnings("unchecked")
-		JAXBElement<Configuration> element = mock(JAXBElement.class);
-		when(contextCreator.create(eq(XMLUtil.PACKAGE), any(ClassLoader.class))).thenReturn(null).thenReturn(ctx);
-		when(ctx.createUnmarshaller()).thenReturn(unmarshaller);
-		when(unmarshaller.unmarshal(inputStream)).thenReturn(element);
-		xmlUtil.unmarshallConfiguration(inputStream);
-		verify(element).getValue();
-	}
 }

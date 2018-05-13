@@ -17,9 +17,9 @@ import de.jollyday.util.CalendarUtil;
 public class RelativeToEasterSundayParserTest {
 
 	RelativeToEasterSundayParser parser = new RelativeToEasterSundayParser();
-	Set<Holiday> holidays = new HashSet<>();	
+	Set<Holiday> holidays = new HashSet<>();
 	CalendarUtil calendarUtil = new CalendarUtil();
-	
+
 	@Test
 	public void testForEasterMonday() {
 		doTest(2013, 1);
@@ -36,14 +36,14 @@ public class RelativeToEasterSundayParserTest {
 		parser.parse(year, holidays, holidaysConfig);
 		assertEquals("Missing holiday.", 1, holidays.size());
 		Holiday h = holidays.iterator().next();
-		LocalDate targetDate = calendarUtil.getEasterSunday(year).plusDays(days);	
+		LocalDate targetDate = calendarUtil.getEasterSunday(year).plusDays(days);
 		assertEquals("Wrong date found.", targetDate, h.getDate());
 	}
 
 	private void addRelativeToEasterHoliday(Holidays holidaysConfig, int days) {
 		RelativeToEasterSunday r = new RelativeToEasterSunday();
 		r.setDays(days);
-		holidaysConfig.getRelativeToEasterSunday().add(r);
+		holidaysConfig.getRelativeToEasterSundayList().add(r);
 	}
 
 }

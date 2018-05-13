@@ -19,62 +19,28 @@
 package de.jollyday.util;
 
 import de.jollyday.HolidayType;
-import de.jollyday.config.Configuration;
 import de.jollyday.config.Month;
-import de.jollyday.config.ObjectFactory;
 import de.jollyday.config.Weekday;
+import de.jollyday.spi.Unmarshaller;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.InputStream;
 import java.time.DayOfWeek;
-import java.util.logging.Logger;
+import java.util.ServiceLoader;
 
 public class XMLUtil {
 
-	/**
-	 * the package name to search for the generated java classes.
-	 */
-	public static final String PACKAGE = "de.jollyday.config";
-
-	private static final Logger LOG = Logger.getLogger(XMLUtil.class.getName());
-
-	private JAXBContextCreator contextCreator = new JAXBContextCreator();
-	private ClassLoadingUtil classLoadingUtil = new ClassLoadingUtil();
-
-	/**
-	 * Unmarshalls the configuration from the stream. Uses <code>JAXB</code> for
-	 * this.
-	 *
-	 * @param stream
-	 *            a {@link java.io.InputStream} object.
-	 * @return The unmarshalled configuration.
-	 */
-	public Configuration unmarshallConfiguration(InputStream stream) {
-		if (stream == null) {
-			throw new IllegalArgumentException("Stream is NULL. Cannot read XML.");
-		}
-		try {
-			JAXBContext ctx;
-			try {
-				ctx = contextCreator.create(XMLUtil.PACKAGE, classLoadingUtil.getClassloader());
-			} catch (JAXBException e) {
-				LOG.warning("Could not create JAXB context using the current threads context classloader. Falling back to ObjectFactory class classloader.");
-				ctx = null;
-			}
-			if (ctx == null) {
-				ctx = contextCreator.create(XMLUtil.PACKAGE, ObjectFactory.class.getClassLoader());
-			}
-			Unmarshaller um = ctx.createUnmarshaller();
-			@SuppressWarnings("unchecked")
-			JAXBElement<Configuration> el = (JAXBElement<Configuration>) um.unmarshal(stream);
-			return el.getValue();
-		} catch (JAXBException ue) {
-			throw new IllegalStateException("Cannot parse holidays XML file.", ue);
-		}
-	}
+    /**
+     * Uses {@link ServiceLoader} mechanism to lookup {@link Unmarshaller}
+     * implementations.
+     *
+     * @return The first {@link Unmarshaller}.
+     */
+	public Unmarshaller loadUnmarshaller() {
+        ServiceLoader<Unmarshaller> loader = ServiceLoader.load(Unmarshaller.class);
+        if (!loader.iterator().hasNext()) {
+            throw new IllegalStateException("Cannot find Unmarshaller service.");
+        }
+        return loader.iterator().next();
+    }
 
 	/**
 	 * Returns the {@link DayOfWeek} equivalent for the given weekday.
@@ -84,7 +50,7 @@ public class XMLUtil {
 	 * @return a DayOfWeek instance.
 	 */
 	public final DayOfWeek getWeekday(Weekday weekday) {
-		return DayOfWeek.valueOf(weekday.value());
+		return DayOfWeek.valueOf(weekday.name());
 		}
 
 	/**
@@ -106,19 +72,16 @@ public class XMLUtil {
 	 * @return the type of holiday
 	 */
 	public HolidayType getType(de.jollyday.config.HolidayType type) {
+	    if (type == null) {
+            return HolidayType.OFFICIAL_HOLIDAY;
+        }
 		switch (type) {
-		case OFFICIAL_HOLIDAY:
-			return HolidayType.OFFICIAL_HOLIDAY;
-		case UNOFFICIAL_HOLIDAY:
-			return HolidayType.UNOFFICIAL_HOLIDAY;
-		default:
-			throw new IllegalArgumentException("Unknown type " + type);
-		}
-	}
-
-	public class JAXBContextCreator {
-		public JAXBContext create(String packageName, ClassLoader classLoader) throws JAXBException {
-			return JAXBContext.newInstance(packageName, classLoader);
+            case OFFICIAL_HOLIDAY:
+                return HolidayType.OFFICIAL_HOLIDAY;
+            case UNOFFICIAL_HOLIDAY:
+                return HolidayType.UNOFFICIAL_HOLIDAY;
+            default:
+                throw new IllegalArgumentException("Unknown type " + type);
 		}
 	}
 

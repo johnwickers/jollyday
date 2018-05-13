@@ -54,7 +54,7 @@ public class RelativeToWeekdayInMonthParserTest {
 		date.setWeekday(Weekday.MONDAY);
 		date.setMonth(Month.JULY);
 		rule.setFixedWeekday(date);
-		config.getRelativeToWeekdayInMonth().add(rule);
+		config.getRelativeToWeekdayInMonthList().add(rule);
 		rule.setValidFrom(2012);
 		rtwim.parse(2011, result, config);
 		Assert.assertTrue("Result is not empty.", result.isEmpty());
@@ -72,7 +72,7 @@ public class RelativeToWeekdayInMonthParserTest {
 		date.setWeekday(Weekday.MONDAY);
 		date.setMonth(Month.JULY);
 		rule.setFixedWeekday(date);
-		config.getRelativeToWeekdayInMonth().add(rule);
+		config.getRelativeToWeekdayInMonthList().add(rule);
 		rtwim.parse(2011, result, config);
 		Assert.assertEquals("Wrong number of dates.", 1, result.size());
 		Assert.assertEquals("Wrong date.", calendarUtil.create(2011, 7, 12), result.iterator().next().getDate());
